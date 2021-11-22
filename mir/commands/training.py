@@ -11,10 +11,8 @@ import yaml
 
 from mir.commands import base
 from mir.protos import mir_command_pb2 as mirpb
-from mir.tools import checker, data_exporter, hash_utils, mir_storage_ops, revs_parser
+from mir.tools import checker, class_ids, data_exporter, hash_utils, mir_storage_ops, revs_parser
 from mir.tools.code import MirCode
-
-from ymir.ids import class_ids
 
 
 def _process_model_storage(out_root: str, config_file_path: str, model_upload_location: str,
@@ -196,7 +194,8 @@ class CmdTrain(base.BaseCommand):
             logging.error(f"dumplicate class names in class_names: {class_names}, abort")
             return MirCode.RC_CMD_INVALID_ARGS
 
-        return_code = checker.check(mir_root, [checker.Prerequisites.IS_INSIDE_MIR_REPO])
+        return_code = checker.check(mir_root,
+                                    [checker.Prerequisites.IS_INSIDE_MIR_REPO, checker.Prerequisites.HAVE_LABELS])
         if return_code != MirCode.RC_OK:
             return return_code
 
@@ -243,7 +242,7 @@ class CmdTrain(base.BaseCommand):
 
         # type names to type ids
         # ['cat', 'person'] -> [4, 2]
-        cls_mgr = class_ids.ClassIdManager()
+        cls_mgr = class_ids.ClassIdManager(mir_root=mir_root)
         type_ids_list = cls_mgr.id_for_names(class_names)
         if not type_ids_list:
             logging.info(f"type ids empty, please check config file: {config_file}")
