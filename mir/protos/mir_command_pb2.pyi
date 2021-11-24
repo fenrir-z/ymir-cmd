@@ -45,6 +45,7 @@ class _AssetTypeEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._Enum
     AssetTypeImageYuv420sp = AssetType.V(5)
     AssetTypeImageYuv422p = AssetType.V(6)
     AssetTypeImageYuv422sp = AssetType.V(7)
+    AssetTypeImageBmp = AssetType.V(8)
     AssetTypeVideoMp4 = AssetType.V(101)
 
 AssetTypeUnknown = AssetType.V(0)
@@ -55,6 +56,7 @@ AssetTypeImageYuv420p = AssetType.V(4)
 AssetTypeImageYuv420sp = AssetType.V(5)
 AssetTypeImageYuv422p = AssetType.V(6)
 AssetTypeImageYuv422sp = AssetType.V(7)
+AssetTypeImageBmp = AssetType.V(8)
 AssetTypeVideoMp4 = AssetType.V(101)
 global___AssetType = AssetType
 
