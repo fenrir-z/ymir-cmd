@@ -117,6 +117,7 @@ class MirStorageOps():
              mir_root: str,
              mir_branch: str,
              mir_storages: List['mirpb.MirStorage.V'],
+             mir_task_id: str = '',
              as_dict: bool = False) -> Dict['mirpb.MirStorage.V', Any]:
         ret = {}
         for ms in mir_storages:
@@ -128,6 +129,7 @@ class MirStorageOps():
                     mir_root: str,
                     mir_branch: str,
                     ms: 'mirpb.MirStorage.V',
+                    mir_task_id: str = '',
                     as_dict: bool = False) -> Any:
         mir_pb_type = mir_storage.mir_type(ms)
         mir_storage_data = mir_pb_type()
