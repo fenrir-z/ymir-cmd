@@ -1,3 +1,4 @@
+import logging
 import os
 from typing import Any, List, Dict, Optional
 
@@ -6,6 +7,7 @@ from google.protobuf import json_format
 
 from mir.commands.checkout import CmdCheckout
 from mir.commands.commit import CmdCommit
+from mir.commands.tag import CmdTag
 from mir.protos import mir_command_pb2 as mirpb
 from mir.tools import exodus, mir_storage, mir_repo_utils
 from mir.tools.code import MirCode
@@ -67,7 +69,7 @@ class MirStorageOps():
 
     # public: save and load
     @classmethod
-    def save_and_commit(cls, mir_root: str, mir_branch: str, his_branch: Optional[str],
+    def save_and_commit(cls, mir_root: str, mir_branch: str, task_id: str, his_branch: Optional[str],
                         mir_datas: Dict['mirpb.MirStorage.V', Any], commit_message: str) -> int:
         """
         saves and commit all contents in mir_datas to branch: `mir_branch`;
@@ -76,6 +78,7 @@ class MirStorageOps():
         Args:
             mir_root (str): path to mir repo
             mir_branch (str): branch you wish to save to, if not exists, create new one
+            task_id (str): task id for this commit
             his_branch (Optional[str]): if `mir_branch` not exists, this is the branch where you wish to start with
             mir_datas (Dict[mirpb.MirStorage.V, pb_message.Message]): datas you wish to save, need no mir_keywords
             commit_message (str): commit messages
@@ -92,6 +95,8 @@ class MirStorageOps():
             raise ValueError("empty commit message")
         if not mir_branch:
             raise ValueError("empty mir branch")
+        if not task_id:
+            raise ValueError('empty task id')
         if mirpb.MirStorage.MIR_KEYWORDS in mir_datas:
             raise ValueError('need no mir_keywords')
 
@@ -122,6 +127,11 @@ class MirStorageOps():
             cls.__save(mir_root=mir_root, mir_datas=mir_datas)
 
             ret_code = CmdCommit.run_with_args(mir_root=mir_root, msg=commit_message)
+            if ret_code != MirCode.RC_OK:
+                return ret_code
+
+            # also have a tag for this commit
+            ret_code = CmdTag.run_with_args(mir_root=mir_root, tag=f"{mir_branch}@{task_id}")
 
         return ret_code
 

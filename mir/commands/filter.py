@@ -172,6 +172,7 @@ class CmdFilter(base.BaseCommand):
 
         mir_storage_ops.MirStorageOps.save_and_commit(mir_root=mir_root,
                                                       mir_branch=dst_typ_rev_tid.rev,
+                                                      task_id=task_id,
                                                       his_branch=src_typ_rev_tid.rev,
                                                       mir_datas=matched_mir_contents,
                                                       commit_message=task.name)

@@ -335,6 +335,7 @@ class CmdMerge(base.BaseCommand):
         }
         mir_storage_ops.MirStorageOps.save_and_commit(mir_root=mir_root,
                                                       mir_branch=dst_typ_rev_tid.rev,
+                                                      task_id=dst_typ_rev_tid.tid,
                                                       his_branch=host_typ_rev_tid.rev,
                                                       mir_datas=mir_data,
                                                       commit_message=task.name)

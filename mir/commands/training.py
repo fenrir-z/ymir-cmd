@@ -107,6 +107,7 @@ def _update_mir_tasks(mir_root: str, base_branch: str, dst_branch: str, task_id:
     mir_storage_ops.add_mir_task(mir_tasks, task)
     mir_storage_ops.MirStorageOps.save_and_commit(mir_root=mir_root,
                                                   mir_branch=dst_branch,
+                                                  task_id=task_id,
                                                   his_branch=base_branch,
                                                   mir_datas={mirpb.MirStorage.MIR_TASKS: mir_tasks},
                                                   commit_message=task_id)
