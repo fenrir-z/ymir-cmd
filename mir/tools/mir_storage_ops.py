@@ -9,7 +9,7 @@ from mir.commands.checkout import CmdCheckout
 from mir.commands.commit import CmdCommit
 from mir.commands.tag import CmdTag
 from mir.protos import mir_command_pb2 as mirpb
-from mir.tools import exodus, mir_storage, mir_repo_utils
+from mir.tools import exodus, mir_storage, mir_repo_utils, revs_parser
 from mir.tools.code import MirCode
 
 
@@ -131,7 +131,7 @@ class MirStorageOps():
                 return ret_code
 
             # also have a tag for this commit
-            ret_code = CmdTag.run_with_args(mir_root=mir_root, tag=f"{mir_branch}@{task_id}")
+            ret_code = CmdTag.run_with_args(mir_root=mir_root, tag=revs_parser.join_rev_tid(mir_branch, task_id))
 
         return ret_code
 
@@ -144,20 +144,33 @@ class MirStorageOps():
              as_dict: bool = False) -> Dict['mirpb.MirStorage.V', Any]:
         ret = {}
         for ms in mir_storages:
-            ret[ms] = cls.load_single(mir_root=mir_root, mir_branch=mir_branch, ms=ms, as_dict=as_dict)
+            ret[ms] = cls.load_single(mir_root=mir_root,
+                                      mir_branch=mir_branch,
+                                      mir_task_id=mir_task_id,
+                                      ms=ms,
+                                      as_dict=as_dict)
         return ret
 
     @classmethod
-    def load_single(cls, mir_root: str, mir_branch: str, ms: 'mirpb.MirStorage.V', as_dict: bool = False) -> Any:
+    def load_single(cls,
+                    mir_root: str,
+                    mir_branch: str,
+                    ms: 'mirpb.MirStorage.V',
+                    mir_task_id: str = '',
+                    as_dict: bool = False) -> Any:
+        rev = revs_parser.join_rev_tid(mir_branch, mir_task_id)
+
         mir_pb_type = mir_storage.mir_type(ms)
         mir_storage_data = mir_pb_type()
-        with exodus.open_mir(mir_root=mir_root, file_name=mir_storage.mir_path(ms), rev=mir_branch, mode="rb") as f:
+        with exodus.open_mir(mir_root=mir_root, file_name=mir_storage.mir_path(ms), rev=rev, mode="rb") as f:
             mir_storage_data.ParseFromString(f.read())
+
         if as_dict:
             mir_storage_data = json_format.MessageToDict(mir_storage_data,
                                                          preserving_proto_field_name=True,
                                                          use_integers_for_enums=True,
                                                          including_default_value_fields=True)
+
         return mir_storage_data
 
 

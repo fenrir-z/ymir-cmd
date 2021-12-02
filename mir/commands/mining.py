@@ -116,6 +116,7 @@ class CmdMining(base.BaseCommand):
         # check `topk` and `add_annotations`
         mir_metadatas: mirpb.MirMetadatas = mir_storage_ops.MirStorageOps.load_single(mir_root=mir_root,
                                                                                       mir_branch=src_typ_rev_tid.rev,
+                                                                                      mir_task_id=src_typ_rev_tid.tid,
                                                                                       ms=mirpb.MirStorage.MIR_METADATAS)
         assets_count = len(mir_metadatas.attributes)
         if assets_count == 0:
@@ -149,7 +150,7 @@ class CmdMining(base.BaseCommand):
 
         _prepare_assets(mir_metadatas=mir_metadatas,
                         mir_root=mir_root,
-                        base_branch=src_typ_rev_tid.rev,
+                        src_rev_tid=src_typ_rev_tid,
                         media_location=media_location,
                         path_prefix_in_index_file=work_asset_path,
                         work_asset_path=work_asset_path,
@@ -188,6 +189,7 @@ def _process_results(mir_root: str, export_out: str, dst_typ_rev_tid: revs_parse
     #   read old
     mir_datas = mir_storage_ops.MirStorageOps.load(mir_root=mir_root,
                                                    mir_branch=src_typ_rev_tid.rev,
+                                                   mir_task_id=src_typ_rev_tid.tid,
                                                    mir_storages=mir_storage.get_all_mir_storage())
     mir_metadatas: mirpb.MirMetadatas = mir_datas[mirpb.MirStorage.MIR_METADATAS]
     mir_annotations: mirpb.MirAnnotations = mir_datas[mirpb.MirStorage.MIR_ANNOTATIONS]
@@ -314,8 +316,9 @@ def _prepare_env(export_root: str, work_in_path: str, work_out_path: str, work_a
     return MirCode.RC_OK
 
 
-def _prepare_assets(mir_metadatas: mirpb.MirMetadatas, mir_root: str, base_branch: str, media_location: str,
-                    path_prefix_in_index_file: str, work_asset_path: str, work_index_file: str) -> None:
+def _prepare_assets(mir_metadatas: mirpb.MirMetadatas, mir_root: str, src_rev_tid: revs_parser.TypRevTid,
+                    media_location: str, path_prefix_in_index_file: str, work_asset_path: str,
+                    work_index_file: str) -> None:
     os.makedirs(work_asset_path, exist_ok=True)
     os.makedirs(os.path.dirname(work_index_file), exist_ok=True)
 
@@ -328,7 +331,8 @@ def _prepare_assets(mir_metadatas: mirpb.MirMetadatas, mir_root: str, base_branc
                          annotation_dir='',
                          need_ext=True,
                          need_id_sub_folder=True,
-                         base_branch=base_branch,
+                         base_branch=src_rev_tid.rev,
+                         base_task_id=src_rev_tid.tid,
                          format_type=data_exporter.ExportFormat.EXPORT_FORMAT_NO_ANNOTATION,
                          index_file_path=work_index_file,
                          index_prefix=path_prefix_in_index_file)

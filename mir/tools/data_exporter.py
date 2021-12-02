@@ -50,6 +50,7 @@ def export(mir_root: str,
            need_ext: bool,
            need_id_sub_folder: bool,
            base_branch: str,
+           base_task_id: str,
            format_type: ExportFormat,
            index_file_path: str = None,
            index_prefix: str = None) -> bool:
@@ -103,6 +104,7 @@ def export(mir_root: str,
     mir_datas = mir_storage_ops.MirStorageOps.load(
         mir_root=mir_root,
         mir_branch=base_branch,
+        mir_task_id=base_task_id,
         mir_storages=[mirpb.MirStorage.MIR_METADATAS, mirpb.MirStorage.MIR_ANNOTATIONS])
     mir_annotations: mirpb.MirAnnotations = mir_datas[mirpb.MirStorage.MIR_ANNOTATIONS]
 

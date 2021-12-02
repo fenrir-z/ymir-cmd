@@ -103,11 +103,13 @@ class TestMirStorage(unittest.TestCase):
         }
         mir_storage_ops.MirStorageOps.save_and_commit(mir_root=self._mir_root,
                                                       mir_branch='a',
+                                                      task_id='mining-task-id',
                                                       his_branch='master',
                                                       mir_datas=mir_data_expect,
                                                       commit_message='test_ops')
         mir_datas = mir_storage_ops.MirStorageOps.load(mir_root=self._mir_root,
                                                        mir_branch='a',
+                                                       mir_task_id='mining-task-id',
                                                        mir_storages=[x for x in mir_data_expect.keys()])
         self.assertDictEqual(mir_datas, mir_data_expect)
 

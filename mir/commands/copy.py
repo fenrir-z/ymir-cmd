@@ -60,6 +60,7 @@ class CmdCopy(base.BaseCommand):
         # read from src mir root
         mir_datas = mir_storage_ops.MirStorageOps.load(mir_root=src_mir_root,
                                                        mir_branch=src_typ_rev_tid.rev,
+                                                       mir_task_id=src_typ_rev_tid.tid,
                                                        mir_storages=mir_storage.get_all_mir_storage())
 
         PhaseLoggerCenter.update_phase(phase='copy.read')

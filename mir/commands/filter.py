@@ -92,6 +92,7 @@ class CmdFilter(base.BaseCommand):
 
         mir_contents = mir_storage_ops.MirStorageOps.load(mir_root=mir_root,
                                                           mir_branch=src_typ_rev_tid.rev,
+                                                          mir_task_id=src_typ_rev_tid.tid,
                                                           mir_storages=mir_storage.get_all_mir_storage())
         mir_metadatas: mirpb.MirMetadatas = mir_contents[mirpb.MirStorage.MIR_METADATAS]
         mir_annotations: mirpb.MirAnnotations = mir_contents[mirpb.MirStorage.MIR_ANNOTATIONS]
