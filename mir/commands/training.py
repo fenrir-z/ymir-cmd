@@ -12,7 +12,7 @@ import yaml
 from mir.commands import base
 from mir.protos import mir_command_pb2 as mirpb
 from mir.tools import checker, class_ids, data_exporter, hash_utils, mir_storage_ops, revs_parser
-from mir.tools.code import MirCode, MirRuntimeError
+from mir.tools.code import MirCode
 from mir.tools.phase_logger import phase_logger_in_out
 
 

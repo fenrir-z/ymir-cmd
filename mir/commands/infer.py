@@ -11,7 +11,7 @@ import yaml
 
 from mir.commands import base
 from mir.tools import utils as mir_utils
-from mir.tools.code import MirCode, MirRuntimeError
+from mir.tools.code import MirCode
 
 
 class CmdInfer(base.BaseCommand):
