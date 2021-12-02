@@ -12,7 +12,7 @@ import yaml
 from mir.commands import base
 from mir.protos import mir_command_pb2 as mirpb
 from mir.tools import checker, class_ids, data_exporter, hash_utils, mir_storage_ops, revs_parser
-from mir.tools.code import MirCode
+from mir.tools.code import MirCode, MirRuntimeError
 from mir.tools.phase_logger import phase_logger_in_out
 
 
@@ -117,12 +117,7 @@ def _update_mir_tasks(mir_root: str, base_branch: str, dst_branch: str, task_id:
 # add this function for mock unit test.
 def _run_train_cmd(cmd: str) -> int:
     logging.info("training with cmd: {}".format(cmd))
-    run_result = subprocess.run(cmd.split(" "))  # run and wait
-
-    # when train process done
-    if run_result.returncode != 0:
-        logging.error("training error occured: {}".format(run_result.returncode))
-        return MirCode.RC_CMD_ERROR_UNKNOWN
+    subprocess.run(cmd.split(" "), check=True, capture_output=True)  # run and wait, if non-zero value returned, raise
 
     return MirCode.RC_OK
 
