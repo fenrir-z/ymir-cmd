@@ -1,13 +1,12 @@
-import logging
 import os
 from typing import Any, List, Dict, Optional
 
 import fasteners  # type: ignore
 from google.protobuf import json_format
 
+from mir import scm
 from mir.commands.checkout import CmdCheckout
 from mir.commands.commit import CmdCommit
-from mir.commands.tag import CmdTag
 from mir.protos import mir_command_pb2 as mirpb
 from mir.tools import exodus, mir_storage, mir_repo_utils, revs_parser
 from mir.tools.code import MirCode
@@ -66,6 +65,11 @@ class MirStorageOps():
             mir_file_path = os.path.join(mir_root, mir_storage.mir_path(ms))
             with open(mir_file_path, "wb") as m_f:
                 m_f.write(mir_data.SerializeToString())
+
+    @classmethod
+    def __add_git_tag(cls, mir_root: str, tag: str) -> None:
+        repo_git = scm.Scm(root_dir=mir_root, scm_executable='git')
+        repo_git.tag(tag)
 
     # public: save and load
     @classmethod
@@ -131,7 +135,7 @@ class MirStorageOps():
                 return ret_code
 
             # also have a tag for this commit
-            ret_code = CmdTag.run_with_args(mir_root=mir_root, tag=revs_parser.join_rev_tid(mir_branch, task_id))
+            cls.__add_git_tag(mir_root=mir_root, tag=revs_parser.join_rev_tid(mir_branch, task_id))
 
         return ret_code
 
