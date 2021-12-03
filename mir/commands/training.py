@@ -117,7 +117,7 @@ def _update_mir_tasks(mir_root: str, base_branch: str, dst_branch: str, task_id:
 # add this function for mock unit test.
 def _run_train_cmd(cmd: str) -> int:
     logging.info("training with cmd: {}".format(cmd))
-    subprocess.run(cmd.split(" "), check=True, capture_output=True)  # run and wait, if non-zero value returned, raise
+    subprocess.run(cmd.split(" "), check=True)  # run and wait, if non-zero value returned, raise
 
     return MirCode.RC_OK
 

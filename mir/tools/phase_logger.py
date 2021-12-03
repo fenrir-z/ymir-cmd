@@ -228,13 +228,11 @@ def phase_logger_in_out(f: Callable) -> Callable:
 
             raise e
         except CalledProcessError as e:
-            stdout_str = str(e.stdout, encoding='utf-8')
-            stderr_str = str(e.stderr, encoding='utf-8')
-            trace_message = f"cmd exception: {traceback.format_exc()}\nstdout: {stdout_str}\nstderr: {stderr_str}"
+            trace_message = f"cmd exception: {traceback.format_exc()}"
 
             mir_logger.update_percent_info(local_percent=1,
                                            task_state=PhaseStateEnum.ERROR,
-                                           state_code=e.returncode,
+                                           state_code=MirCode.RC_RUNTIME_CONTAINER_ERROR,
                                            state_content=str(e),
                                            trace_message=trace_message)
 
